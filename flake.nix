@@ -11,9 +11,36 @@
           inherit system;
         };
 
+        mlx_chat = pkgs.writeShellApplication {
+          name = "mlx_chat";
+          runtimeInputs = with pkgs; [
+            python313Packages.python
+            python313Packages.uv
+          ];
+          text = ''
+            cd ${self}
+            uv run mlx_lm.chat --model mlx-community/Qwen2.5-7B-Instruct-Uncensored-4bit
+          '';
+        };
+
+        mlx_generate = pkgs.writeShellApplication {
+          name = "mlx_generate";
+          runtimeInputs = with pkgs; [
+            python313Packages.python
+            python313Packages.uv
+          ];
+          text = ''
+            cd ${self}
+            uv run mlx_lm.generate --model mlx-community/Qwen2.5-7B-Instruct-Uncensored-4bit "$@"
+          '';
+        };
+
       in
       {
-        packages = { };
+        packages = {
+          inherit mlx_chat mlx_generate;
+          default = mlx_chat;
+        };
 
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
