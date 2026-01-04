@@ -41,9 +41,9 @@
             cd ${self}
             if [ ! -t 0 ]; then
               prompt=$(cat)
-              uv run mlx_lm.generate --model mlx-community/Qwen2.5-7B-Instruct-Uncensored-4bit --verbose False --prompt "$prompt" "$@"
+              uv run mlx_lm.generate --model mlx-community/Qwen2.5-7B-Instruct-Uncensored-4bit --verbose False --max-tokens 4096 --prompt "$prompt" "$@"
             else
-              uv run mlx_lm.generate --model mlx-community/Qwen2.5-7B-Instruct-Uncensored-4bit --verbose False "$@"
+              uv run mlx_lm.generate --model mlx-community/Qwen2.5-7B-Instruct-Uncensored-4bit --verbose False --max-tokens 4096 "$@"
             fi
           '';
         };
