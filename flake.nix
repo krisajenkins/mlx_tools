@@ -57,7 +57,7 @@
       {
         packages = {
           inherit mlx_chat mlx_generate mlx_tools;
-          default = mlx_tools;
+          default = mlx_chat;
         };
 
         devShells.default = pkgs.mkShell {

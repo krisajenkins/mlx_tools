@@ -5,13 +5,15 @@ A Nix flake for running local LLMs on Apple Silicon using [MLX](https://github.c
 ## Installation
 
 ```bash
-nix profile install github:krisajenkins/mlx_tools
+# Install both mlx_chat and mlx_generate
+nix profile install github:krisajenkins/mlx_tools#mlx_tools
 ```
 
 Or run directly without installing:
 
 ```bash
-nix run github:krisajenkins/mlx_tools
+nix run github:krisajenkins/mlx_tools              # Interactive chat
+nix run github:krisajenkins/mlx_tools#mlx_generate -- --prompt "Hello"
 ```
 
 ## Usage
