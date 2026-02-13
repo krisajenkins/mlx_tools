@@ -24,7 +24,7 @@
             export UV_PROJECT_ENVIRONMENT="${cacheDir}/.venv"
             export HF_HUB_DISABLE_PROGRESS_BARS=1
             cd ${self}
-            uv run mlx_lm.chat --model mlx-community/Qwen2.5-7B-Instruct-Uncensored-4bit
+            uv run mlx_lm.chat --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit
           '';
         };
 
@@ -41,9 +41,9 @@
             cd ${self}
             if [ ! -t 0 ]; then
               prompt=$(cat)
-              uv run mlx_lm.generate --model mlx-community/Qwen2.5-7B-Instruct-Uncensored-4bit --verbose False --max-tokens 4096 --prompt "$prompt" "$@"
+              uv run mlx_lm.generate --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit --verbose False --max-tokens 4096 --prompt "$prompt" "$@"
             else
-              uv run mlx_lm.generate --model mlx-community/Qwen2.5-7B-Instruct-Uncensored-4bit --verbose False --max-tokens 4096 "$@"
+              uv run mlx_lm.generate --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit --verbose False --max-tokens 4096 "$@"
             fi
           '';
         };
