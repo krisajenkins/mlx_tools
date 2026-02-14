@@ -12,6 +12,17 @@
         };
 
         cacheDir = "\${XDG_CACHE_HOME:-$HOME/.cache}/mlx_tools";
+        model = "mlx-community/Qwen3-32B-4bit";
+
+        modelCacheDir = builtins.replaceStrings [ "/" ] [ "--" ] model;
+
+        ensureModel = ''
+          model_cache_dir="''${HF_HOME:-$HOME/.cache/huggingface}/hub/models--${modelCacheDir}"
+          if [ ! -d "$model_cache_dir" ]; then
+            echo "Downloading model ${model}..."
+            uv run huggingface-cli download "${model}"
+          fi
+        '';
 
         mlx_chat = pkgs.writeShellApplication {
           name = "mlx_chat";
@@ -22,9 +33,9 @@
           text = ''
             mkdir -p "${cacheDir}"
             export UV_PROJECT_ENVIRONMENT="${cacheDir}/.venv"
-            export HF_HUB_DISABLE_PROGRESS_BARS=1
             cd ${self}
-            uv run mlx_lm.chat --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit
+            ${ensureModel}
+            uv run mlx_lm.chat --model "${model}"
           '';
         };
 
@@ -37,13 +48,13 @@
           text = ''
             mkdir -p "${cacheDir}"
             export UV_PROJECT_ENVIRONMENT="${cacheDir}/.venv"
-            export HF_HUB_DISABLE_PROGRESS_BARS=1
             cd ${self}
+            ${ensureModel}
             if [ ! -t 0 ]; then
               prompt=$(cat)
-              uv run mlx_lm.generate --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit --verbose False --max-tokens 4096 --prompt "$prompt" "$@"
+              uv run mlx_lm.generate --model "${model}" --verbose False --max-tokens 4096 --prompt "$prompt" "$@"
             else
-              uv run mlx_lm.generate --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit --verbose False --max-tokens 4096 "$@"
+              uv run mlx_lm.generate --model "${model}" --verbose False --max-tokens 4096 "$@"
             fi
           '';
         };
@@ -61,9 +72,9 @@
         };
 
         devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            python313Packages.python
-            python313Packages.uv
+          buildInputs = [
+            mlx_chat
+            mlx_generate
           ];
         };
       });
